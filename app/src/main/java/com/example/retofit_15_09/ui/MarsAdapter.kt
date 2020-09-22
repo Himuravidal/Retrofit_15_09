@@ -18,11 +18,12 @@ class MarsAdapter(val callback: CallbackInterface):RecyclerView.Adapter<MarsAdap
         notifyDataSetChanged()
     }
 
-    inner class TerrainViewHolder(itemView: View): RecyclerView.ViewHolder(itemView), View.OnClickListener {
+    inner class TerrainViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val itemImg = itemView.imageView
-        override fun onClick(p0: View?) {
+        val clickLister = itemView.setOnClickListener {
             callback.passTheData(terrainList[adapterPosition])
         }
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TerrainViewHolder {

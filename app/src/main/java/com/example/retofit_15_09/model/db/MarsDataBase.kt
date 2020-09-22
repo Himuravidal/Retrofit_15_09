@@ -1,9 +1,10 @@
-package com.example.retofit_15_09.model
+package com.example.retofit_15_09.model.db
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.retofit_15_09.model.Terrain
 
 
 private const val DATA_BASE_NAME = "mars_db"
@@ -25,7 +26,8 @@ abstract class MarsDataBase : RoomDatabase() {
             synchronized(this) {
                 val instance = Room.databaseBuilder(context,
                     MarsDataBase::class.java,
-                    DATA_BASE_NAME)
+                    DATA_BASE_NAME
+                )
                     .build()
                 INSTANCE = instance
                 return instance

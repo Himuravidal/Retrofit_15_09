@@ -1,4 +1,4 @@
-package com.example.retofit_15_09.model
+package com.example.retofit_15_09.model.network
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

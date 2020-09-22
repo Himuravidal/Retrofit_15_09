@@ -2,7 +2,8 @@ package com.example.retofit_15_09.model
 
 import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import com.example.retofit_15_09.model.db.TerrainDao
+import com.example.retofit_15_09.model.network.RetrofitClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -16,13 +17,18 @@ class Repository(private val terrainDao: TerrainDao) {
     val mLiveData = terrainDao.getAllTerrainsFromDB()
 
 
+    fun obtainTerrainByID(id: String): LiveData<Terrain> {
+       return terrainDao.getTerrainByID(id)
+    }
+
+
     // La vieja confiable
     fun getDataFromServer() {
         val call = service.getDataFromApi()
         call.enqueue(object : Callback<List<Terrain>> {
 
             override fun onResponse(call: Call<List<Terrain>>, response: Response<List<Terrain>>) {
-                when(response.code()) {
+                when (response.code()) {
                     in 200..299 -> CoroutineScope(Dispatchers.IO).launch {
                         response.body()?.let {
                             terrainDao.insertAllTerrains(it)
@@ -40,5 +46,17 @@ class Repository(private val terrainDao: TerrainDao) {
     }
 
 
+    fun getDataFromServerWithCoroutines() = CoroutineScope(Dispatchers.IO).launch {
+        val service = kotlin.runCatching { service.getDataFromApiCorutines() }
+        service.onSuccess {
+            when (it.code()) {
+                in 200..299 -> it.body()?.let { it1 -> terrainDao.insertAllTerrains(it1) }
+                in 300..399 -> Log.d("ERROR", "ERROR de Parametros ETC")
+            }
+        }
+        service.onFailure {
+            Log.e("REPO_ERROR", it.message.toString())
+        }
+    }
 
 }
